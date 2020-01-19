@@ -1,6 +1,7 @@
 import React, { useContext } from "react"
 import { TaskContext } from "../Store"
 import Task from "./Task"
+import { Grid, Typography } from "@material-ui/core"
 
 const TaskList = () => {
   const { tasks } = useContext(TaskContext)
@@ -10,10 +11,14 @@ const TaskList = () => {
 
   return (
     <div>
-      <h2>Task List</h2>
-      {tasks.map(t => (
-        <Task key={t.id} task={t} />
-      ))}
+      <Typography variant="h4">Task List</Typography>
+      <Grid container cols={3}>
+        {tasks.map(t => (
+          <Grid key={t.id}>
+            <Task task={t} />
+          </Grid>
+        ))}
+      </Grid>
     </div>
   )
 }
