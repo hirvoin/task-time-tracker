@@ -31,31 +31,23 @@ const Task = ({ task }) => {
   const classes = useStyles()
   const { dispatch } = useContext(TaskContext)
 
-  const calculateDuration = (startDate, stopDate) => {
-    if (startDate && stopDate) {
-      const diff = Math.abs(stopDate.getTime() - startDate.getTime())
-      const seconds = Math.floor(diff / 1000)
-      const minutes = Math.floor(seconds / 60)
-      const hours = Math.floor(minutes / 60)
-      return { minutes, seconds, hours }
-    }
-  }
+  const calculateDuration = () => {
+    // from stackoverflow
+    const diff = Math.abs(
+      (task.stopTime.getTime() - task.startTime.getTime()) / 1000
+    )
+    const hours = Math.floor(diff / 3600)
+    const minutes = Math.floor((diff % 3600) / 60)
+    const seconds = Math.floor((diff % 3600) % 60)
 
-  const formatDuration = (start, stop) => {
-    if (start && stop) {
-      return (
-        <p>
-          {
-            (calculateDuration(start, stop).hours + " hours ",
-            calculateDuration(start, stop).minutes + " minutes ",
-            calculateDuration(start, stop).seconds + " seconds")
-          }
-        </p>
-      )
-    }
+    const hDisplay =
+      hours > 0 ? hours + (hours === 1 ? " hour, " : " hours, ") : ""
+    const mDisplay =
+      minutes > 0 ? minutes + (minutes === 1 ? " minute, " : " minutes, ") : ""
+    const sDisplay =
+      seconds > 0 ? seconds + (seconds === 1 ? " second" : " seconds") : ""
+    return hDisplay + mDisplay + sDisplay
   }
-
-  const formatTime = time => {}
 
   const handleStart = () => {
     dispatch({
@@ -65,14 +57,12 @@ const Task = ({ task }) => {
   }
 
   const handleStop = () => {
-    calculateDuration()
     dispatch({
       type: "STOP_TASK",
-      data: task
+      data: { ...task }
     })
   }
 
-  const borderstyle = task.stopTime ? "solid green" : "solid"
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -86,7 +76,7 @@ const Task = ({ task }) => {
         {task.stopTime && (
           <div>
             <p>stop {task.stopTime.toLocaleTimeString()}</p>
-            Duration {formatDuration(task.startTime, task.stopTime)}
+            Duration {calculateDuration()}
           </div>
         )}
       </CardContent>

@@ -31,14 +31,12 @@ const Store = ({ children }) => {
   const [tasks, dispatch] = useReducer((state, action) => {
     switch (action.type) {
       case "ADD_TASK": {
-        console.log("adding task")
         const newState = [...state, action.data]
         return newState.sort(
           (a, b) => b.dateAdded.getTime() - a.dateAdded.getTime()
         )
       }
       case "START_TASK": {
-        console.log("starting task...")
         const updatedTask = {
           ...action.data,
           inProgress: true,
@@ -50,11 +48,12 @@ const Store = ({ children }) => {
         )
       }
       case "STOP_TASK": {
-        console.log("STOP_TASK", action.data)
+        const currentDate = new Date()
         const updatedTask = {
           ...action.data,
           inProgress: false,
-          stopTime: new Date()
+          stopTime: currentDate,
+          duration: currentDate.getTime() - action.data.startTime.getTime()
         }
         const stateWithoutTask = state.filter(t => t.id !== action.data.id)
         return [...stateWithoutTask, updatedTask].sort(
