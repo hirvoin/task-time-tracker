@@ -13,11 +13,13 @@ const TaskList = () => {
     <div>
       <Typography variant="h4">Task List</Typography>
       <Grid container cols={3}>
-        {tasks.map(t => (
-          <Grid key={t.id}>
-            <Task task={t} />
-          </Grid>
-        ))}
+        {tasks
+          .filter(t => t.visible)
+          .map(t => (
+            <Grid key={t.id}>
+              <Task task={t} />
+            </Grid>
+          ))}
       </Grid>
     </div>
   )

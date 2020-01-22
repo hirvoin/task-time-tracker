@@ -7,26 +7,13 @@ const initialTasks = [
     title: "title1",
     description: "description1",
     dateAdded: new Date(),
-    inProgress: false
+    visible: true
   }
-  // {
-  //   id: uuid(),
-  //   title: "title2",
-  //   description: "description2",
-  //   dateAdded: Date(),
-  //   inProgress: false
-  // },
-  // {
-  //   id: uuid(),
-  //   title: "title3",
-  //   description: "description3",
-  //   dateAdded: Date(),
-  //   inProgress: false
-  // }
 ]
 
 export const TaskContext = createContext(initialTasks)
 
+// some logic could be refactored to action creator functions
 const Store = ({ children }) => {
   const [tasks, dispatch] = useReducer((state, action) => {
     switch (action.type) {
@@ -39,7 +26,6 @@ const Store = ({ children }) => {
       case "START_TASK": {
         const updatedTask = {
           ...action.data,
-          inProgress: true,
           startTime: new Date()
         }
         const stateWithoutTask = state.filter(t => t.id !== action.data.id)
@@ -51,7 +37,6 @@ const Store = ({ children }) => {
         const currentDate = new Date()
         const updatedTask = {
           ...action.data,
-          inProgress: false,
           stopTime: currentDate,
           duration: currentDate.getTime() - action.data.startTime.getTime()
         }
@@ -59,6 +44,9 @@ const Store = ({ children }) => {
         return [...stateWithoutTask, updatedTask].sort(
           (a, b) => b.dateAdded.getTime() - a.dateAdded.getTime()
         )
+      }
+      case "SET_VISIBLE_TASKS": {
+        return action.data
       }
       default:
         throw new Error()

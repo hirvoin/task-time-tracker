@@ -13,9 +13,11 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const initialState = ""
+
 const NewTaskForm = () => {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
+  const [title, setTitle] = useState(initialState)
+  const [description, setDescription] = useState(initialState)
 
   const tasks = useContext(TaskContext)
 
@@ -23,8 +25,16 @@ const NewTaskForm = () => {
     event.preventDefault()
     tasks.dispatch({
       type: "ADD_TASK",
-      data: { id: uuid(), title, description, dateAdded: new Date() }
+      data: {
+        id: uuid(),
+        title,
+        description,
+        dateAdded: new Date(),
+        visible: true
+      }
     })
+    setTitle(initialState)
+    setDescription(initialState)
   }
 
   const classes = useStyles()
@@ -37,15 +47,17 @@ const NewTaskForm = () => {
           className={classes.textField}
           variant="outlined"
           name="taskTitle"
-          label="Task title"
+          label="Title"
           type="text"
           placeholder="Title"
+          value={title}
           onChange={event => setTitle(event.target.value)}
         />
         <TextField
+          value={description}
           className={classes.textField}
           variant="outlined"
-          label="Task Description"
+          label="Description"
           name="taskDescription"
           type="text"
           placeholder="Description"

@@ -1,8 +1,8 @@
-import React from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { AppBar, Toolbar, Typography, InputBase } from "@material-ui/core/"
 import { fade, makeStyles } from "@material-ui/core/styles"
-
 import SearchIcon from "@material-ui/icons/Search"
+import { TaskContext } from "../Store"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,26 +38,80 @@ const useStyles = makeStyles(theme => ({
     transition: theme.transitions.create("width"),
     width: 120,
     "&:focus": {
-      width: 200
+      width: 160
     }
   }
 }))
 
 const NavBar = () => {
+  const { tasks, dispatch } = useContext(TaskContext)
+
+  const [search, setSearch] = useState("")
+
   const classes = useStyles()
+
+  const totalDuration = taskList => {
+    const resultInSeconds =
+      taskList.reduce((prev, curr) => {
+        return !curr.duration ? prev : prev + curr.duration
+      }, 0) / 1000
+
+    if (!resultInSeconds) return null
+
+    const hours = Math.floor(resultInSeconds / 3600)
+    const minutes = Math.floor((resultInSeconds % 3600) / 60)
+    const seconds = Math.floor((resultInSeconds % 3600) % 60)
+
+    const hDisplay =
+      hours > 0 ? hours + (hours === 1 ? " hour, " : " hours, ") : ""
+    const mDisplay =
+      minutes > 0 ? minutes + (minutes === 1 ? " minute, " : " minutes, ") : ""
+    const sDisplay =
+      seconds > 0 ? seconds + (seconds === 1 ? " second" : " seconds") : ""
+    return "Total duration: " + hDisplay + mDisplay + sDisplay
+  }
+
+  // gives warnings so need to refactor later
+  useEffect(() => {
+    const toggledTasks = tasks.map(t => {
+      console.log(t)
+      return t.title.toLowerCase().includes(search)
+        ? { ...t, visible: true }
+        : { ...t, visible: false }
+    })
+    console.log("visible tasks", toggledTasks)
+    dispatch({
+      type: "SET_VISIBLE_TASKS",
+      data: toggledTasks
+    })
+  }, [search])
+
+  const handleChange = e => {
+    setSearch(e.target.value)
+  }
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
           <Typography className={classes.title} variant="h6" noWrap>
-            TaskTimeTracker
+            TaskApp
+          </Typography>
+          {tasks.length > 0 && (
+            <Typography className={classes.title} noWrap>
+              Total tasks: {tasks.length}{" "}
+            </Typography>
+          )}
+          <Typography className={classes.title} noWrap>
+            {totalDuration(tasks)}
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
             <InputBase
+              onChange={event => handleChange(event)}
+              value={search}
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,
