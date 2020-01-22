@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useContext } from "react"
-import { AppBar, Toolbar, Typography, InputBase } from "@material-ui/core/"
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  InputBase,
+  Container
+} from "@material-ui/core/"
 import { fade, makeStyles } from "@material-ui/core/styles"
 import SearchIcon from "@material-ui/icons/Search"
 import { TaskContext } from "../Store"
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 0
   },
   title: {
     flexGrow: 1
+  },
+  details: {
+    margin: theme.spacing(3)
   },
   search: {
     position: "relative",
@@ -36,9 +45,9 @@ const useStyles = makeStyles(theme => ({
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create("width"),
-    width: 120,
+    width: 140,
     "&:focus": {
-      width: 160
+      width: 200
     }
   }
 }))
@@ -93,34 +102,36 @@ const NavBar = () => {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
-            TaskApp
-          </Typography>
-          {tasks.length > 0 && (
-            <Typography className={classes.title} noWrap>
-              Total tasks: {tasks.length}{" "}
+        <Container>
+          <Toolbar>
+            <Typography className={classes.title} variant="h6" noWrap>
+              TaskApp
             </Typography>
-          )}
-          <Typography className={classes.title} noWrap>
-            {totalDuration(tasks)}
-          </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+            {tasks.length > 0 && (
+              <Typography className={classes.details} noWrap>
+                Total tasks: {tasks.length}{" "}
+              </Typography>
+            )}
+            <Typography className={classes.details} noWrap>
+              {totalDuration(tasks)}
+            </Typography>
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                onChange={event => handleChange(event)}
+                value={search}
+                placeholder="Filter by title…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput
+                }}
+                inputProps={{ "aria-label": "search" }}
+              />
             </div>
-            <InputBase
-              onChange={event => handleChange(event)}
-              value={search}
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
-        </Toolbar>
+          </Toolbar>
+        </Container>
       </AppBar>
     </div>
   )

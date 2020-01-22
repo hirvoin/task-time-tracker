@@ -4,6 +4,9 @@ import { TaskContext } from "../Store"
 import { Button, TextField, Typography, makeStyles } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    margin: theme.spacing(3)
+  },
   textField: {
     margin: theme.spacing(1),
     width: 200
@@ -40,8 +43,7 @@ const NewTaskForm = () => {
   const classes = useStyles()
 
   return (
-    <div>
-      <Typography variant="h4">Add a new task</Typography>
+    <div className={classes.root}>
       <form onSubmit={handleSubmit}>
         <TextField
           className={classes.textField}
