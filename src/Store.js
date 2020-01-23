@@ -13,7 +13,6 @@ const initialTasks = [
 
 export const TaskContext = createContext(initialTasks)
 
-// some logic could be refactored to action creator functions
 const Store = ({ children }) => {
   const [tasks, dispatch] = useReducer((state, action) => {
     switch (action.type) {
@@ -24,24 +23,14 @@ const Store = ({ children }) => {
         )
       }
       case "START_TASK": {
-        const updatedTask = {
-          ...action.data,
-          startTime: new Date()
-        }
         const stateWithoutTask = state.filter(t => t.id !== action.data.id)
-        return [...stateWithoutTask, updatedTask].sort(
+        return [...stateWithoutTask, action.data].sort(
           (a, b) => b.dateAdded.getTime() - a.dateAdded.getTime()
         )
       }
       case "STOP_TASK": {
-        const currentDate = new Date()
-        const updatedTask = {
-          ...action.data,
-          stopTime: currentDate,
-          duration: currentDate.getTime() - action.data.startTime.getTime()
-        }
         const stateWithoutTask = state.filter(t => t.id !== action.data.id)
-        return [...stateWithoutTask, updatedTask].sort(
+        return [...stateWithoutTask, action.data].sort(
           (a, b) => b.dateAdded.getTime() - a.dateAdded.getTime()
         )
       }

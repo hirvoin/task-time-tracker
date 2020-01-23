@@ -32,7 +32,6 @@ const Task = ({ task }) => {
   const { dispatch } = useContext(TaskContext)
 
   const calculateDuration = () => {
-    // from stackoverflow
     const diff = Math.abs(
       (task.stopTime.getTime() - task.startTime.getTime()) / 1000
     )
@@ -50,16 +49,26 @@ const Task = ({ task }) => {
   }
 
   const handleStart = () => {
+    const updatedTask = {
+      ...task,
+      startTime: new Date()
+    }
     dispatch({
       type: "START_TASK",
-      data: task
+      data: updatedTask
     })
   }
 
   const handleStop = () => {
+    const currentDate = new Date()
+    const updatedTask = {
+      ...task,
+      stopTime: currentDate,
+      duration: currentDate.getTime() - task.startTime.getTime()
+    }
     dispatch({
       type: "STOP_TASK",
-      data: { ...task }
+      data: updatedTask
     })
   }
 

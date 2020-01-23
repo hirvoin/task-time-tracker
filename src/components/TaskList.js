@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { TaskContext } from "../Store"
 import Task from "./Task"
-import { Grid, Typography, makeStyles } from "@material-ui/core"
+import { Grid, makeStyles } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,7 +18,6 @@ const TaskList = () => {
 
   return (
     <div className={classes.root}>
-      {/* <Typography variant="h4">Task List</Typography> */}
       <Grid container cols={3}>
         {tasks
           .filter(t => t.visible)

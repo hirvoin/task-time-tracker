@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react"
 import uuid from "uuid"
 import { TaskContext } from "../Store"
-import { Button, TextField, Typography, makeStyles } from "@material-ui/core"
+import { Button, TextField, makeStyles } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,15 +26,16 @@ const NewTaskForm = () => {
 
   const handleSubmit = event => {
     event.preventDefault()
+    const newTask = {
+      id: uuid(),
+      title,
+      description,
+      dateAdded: new Date(),
+      visible: true
+    }
     tasks.dispatch({
       type: "ADD_TASK",
-      data: {
-        id: uuid(),
-        title,
-        description,
-        dateAdded: new Date(),
-        visible: true
-      }
+      data: newTask
     })
     setTitle(initialState)
     setDescription(initialState)

@@ -53,10 +53,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const NavBar = () => {
-  const { tasks, dispatch } = useContext(TaskContext)
-
   const [search, setSearch] = useState("")
 
+  const { tasks, dispatch } = useContext(TaskContext)
   const classes = useStyles()
 
   const totalDuration = taskList => {
@@ -80,15 +79,14 @@ const NavBar = () => {
     return "Total duration: " + hDisplay + mDisplay + sDisplay
   }
 
-  // gives warnings so need to refactor later
+  // needs refactoring?
   useEffect(() => {
     const toggledTasks = tasks.map(t => {
-      console.log(t)
       return t.title.toLowerCase().includes(search)
         ? { ...t, visible: true }
         : { ...t, visible: false }
     })
-    console.log("visible tasks", toggledTasks)
+
     dispatch({
       type: "SET_VISIBLE_TASKS",
       data: toggledTasks
