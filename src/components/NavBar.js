@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import { AppBar, Toolbar, Typography, InputBase } from "@material-ui/core/"
 import { fade, makeStyles } from "@material-ui/core/styles"
-import SearchIcon from "@material-ui/icons/Search"
+import { Search, Timer } from "@material-ui/icons/"
 import { TaskContext } from "../Store"
 import DropDownMenu from "./DropDownMenu"
 
@@ -13,10 +13,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   details: {
-    margin: theme.spacing(3),
-    [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
+    marginRight: theme.spacing(3)
   },
   search: {
     position: "relative",
@@ -36,6 +33,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
+  },
+  timeIcon: {
+    marginRight: theme.spacing(1)
   },
   inputRoot: {
     color: "inherit"
@@ -73,14 +73,16 @@ const NavBar = () => {
     const mDisplay =
       minutes > 0 ? minutes + (minutes === 1 ? " minute, " : " minutes, ") : ""
     const sDisplay =
-      seconds > 0 ? seconds + (seconds === 1 ? " second" : " seconds") : ""
-    return "Total duration: " + hDisplay + mDisplay + sDisplay
+      seconds > 0
+        ? seconds + (seconds === 1 ? " second" : " seconds")
+        : "1 second"
+    return hDisplay + mDisplay + sDisplay
   }
 
   // needs refactoring?
   useEffect(() => {
     const toggledTasks = tasks.map(t => {
-      return t.title.toLowerCase().includes(search)
+      return t.title.toLowerCase().includes(search.toLowerCase())
         ? { ...t, visible: true }
         : { ...t, visible: false }
     })
@@ -102,13 +104,23 @@ const NavBar = () => {
           <DropDownMenu />
           <Typography className={classes.title} variant="h6" noWrap>
             TaskApp
-          </Typography>
-          <Typography className={classes.details} noWrap>
-            {totalDuration(tasks)}
-          </Typography>
+          </Typography>{" "}
+          <div
+            className={classes.details}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <Timer className={classes.timeIcon} />
+            <p>
+              {totalDuration(tasks) ? (
+                totalDuration(tasks)
+              ) : (
+                <i> total duration</i>
+              )}
+            </p>
+          </div>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
-              <SearchIcon />
+              <Search />
             </div>
             <InputBase
               onChange={event => handleChange(event)}

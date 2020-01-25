@@ -5,7 +5,7 @@ const initialTasks = [
   {
     id: uuid(),
     title: "I'm a task!",
-    description: "Try adding more above",
+    description: "Try adding more from above",
     dateAdded: new Date(),
     visible: true
   }
@@ -21,6 +21,9 @@ const Store = ({ children }) => {
         return newState.sort(
           (a, b) => b.dateAdded.getTime() - a.dateAdded.getTime()
         )
+      }
+      case "REMOVE_TASK": {
+        return state.filter(t => t.id !== action.data)
       }
       case "START_TASK": {
         const stateWithoutTask = state.filter(t => t.id !== action.data.id)

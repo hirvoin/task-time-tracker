@@ -4,6 +4,7 @@ import { TaskContext } from "../Store"
 import {
   Card,
   Button,
+  IconButton,
   makeStyles,
   Typography,
   CardActions,
@@ -17,13 +18,14 @@ import {
   CheckCircle,
   DonutLarge,
   PlayCircleOutline,
-  Timer
+  Timer,
+  Delete
 } from "@material-ui/icons"
 
 const useStyles = makeStyles(theme => ({
   card: {
     minWidth: "275px",
-    minHeight: "225px",
+    // minHeight: "225px",
     margin: theme.spacing(1)
   },
   title: {
@@ -94,6 +96,13 @@ const Task = ({ task }) => {
     })
   }
 
+  const handleRemove = () => {
+    dispatch({
+      type: "REMOVE_TASK",
+      data: task.id
+    })
+  }
+
   return (
     <Card className={classes.card} elevation={2}>
       <CardContent>
@@ -111,30 +120,37 @@ const Task = ({ task }) => {
           {task.description}
         </Typography>
         <Divider className={classes.divider} />
-        {task.startTime && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <PlayCircleOutline className={classes.timeIcon} />
-            <p>{i18next.t("key", { date: task.startTime })}</p>
-          </div>
-        )}
-        {task.stopTime && (
-          <div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <AssignmentTurnedIn className={classes.timeIcon} />
-              {i18next.t("key", { date: task.stopTime })}
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Timer className={classes.timeIcon} />
-              <p>{calculateDuration()}</p>
-            </div>
-          </div>
-        )}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginTop: 0
+          }}
+        >
+          <PlayCircleOutline className={classes.timeIcon} />
+          <p>
+            {task.startTime ? (
+              i18next.t("key", { date: task.startTime })
+            ) : (
+              <i>start time</i>
+            )}
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <AssignmentTurnedIn className={classes.timeIcon} />
+
+          {task.stopTime ? (
+            i18next.t("key", { date: task.stopTime })
+          ) : (
+            <i>finish time</i>
+          )}
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Timer className={classes.timeIcon} />
+          <p>{task.stopTime ? calculateDuration() : <i>duration</i>}</p>
+        </div>
       </CardContent>
+
       <CardActions>
         {!task.startTime && (
           <Button
@@ -146,8 +162,25 @@ const Task = ({ task }) => {
           </Button>
         )}
         {!task.stopTime && task.startTime && (
-          <Button startIcon={<Done />} onClick={handleStop}>
+          <Button startIcon={<Done color="action" />} onClick={handleStop}>
             Finish task
+          </Button>
+        )}
+        {!task.stopTime && (
+          <IconButton
+            aria-label="delete"
+            style={{
+              marginLeft: "auto"
+            }}
+            onClick={handleRemove}
+            size="small"
+          >
+            <Delete />
+          </IconButton>
+        )}
+        {task.stopTime && (
+          <Button startIcon={<Delete color="action" />} onClick={handleRemove}>
+            Remove task
           </Button>
         )}
       </CardActions>
