@@ -7,6 +7,7 @@ export default {
   component: Task
 }
 
+// task start- and end times are not displayed for some reason
 export const NotStarted = () => <Task task={notStarted} />
 
 export const InProgress = () => <Task task={inProgress} />

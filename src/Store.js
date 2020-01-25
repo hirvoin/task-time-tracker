@@ -4,8 +4,8 @@ import uuid from "uuid"
 const initialTasks = [
   {
     id: uuid(),
-    title: "title1",
-    description: "description1",
+    title: "I'm a task!",
+    description: "Try adding more above",
     dateAdded: new Date(),
     visible: true
   }
@@ -38,7 +38,7 @@ const Store = ({ children }) => {
         return action.data
       }
       default:
-        throw new Error()
+        return state
     }
   }, initialTasks)
 

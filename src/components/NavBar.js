@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useContext } from "react"
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  InputBase,
-  Container
-} from "@material-ui/core/"
+import { AppBar, Toolbar, Typography, InputBase } from "@material-ui/core/"
 import { fade, makeStyles } from "@material-ui/core/styles"
 import SearchIcon from "@material-ui/icons/Search"
 import { TaskContext } from "../Store"
+import DropDownMenu from "./DropDownMenu"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,7 +13,10 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   details: {
-    margin: theme.spacing(3)
+    margin: theme.spacing(3),
+    [theme.breakpoints.down("sm")]: {
+      display: "none"
+    }
   },
   search: {
     position: "relative",
@@ -59,16 +57,16 @@ const NavBar = () => {
   const classes = useStyles()
 
   const totalDuration = taskList => {
-    const resultInSeconds =
+    const result =
       taskList.reduce((prev, curr) => {
         return !curr.duration ? prev : prev + curr.duration
       }, 0) / 1000
 
-    if (!resultInSeconds) return null
+    if (!result) return null
 
-    const hours = Math.floor(resultInSeconds / 3600)
-    const minutes = Math.floor((resultInSeconds % 3600) / 60)
-    const seconds = Math.floor((resultInSeconds % 3600) % 60)
+    const seconds = Math.floor((result % 3600) % 60)
+    const minutes = Math.floor((result % 3600) / 60)
+    const hours = Math.floor(result / 3600)
 
     const hDisplay =
       hours > 0 ? hours + (hours === 1 ? " hour, " : " hours, ") : ""
@@ -100,36 +98,30 @@ const NavBar = () => {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Container>
-          <Toolbar>
-            <Typography className={classes.title} variant="h6" noWrap>
-              TaskApp
-            </Typography>
-            {tasks.length > 0 && (
-              <Typography className={classes.details} noWrap>
-                Total tasks: {tasks.length}{" "}
-              </Typography>
-            )}
-            <Typography className={classes.details} noWrap>
-              {totalDuration(tasks)}
-            </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                onChange={event => handleChange(event)}
-                value={search}
-                placeholder="Filter by title…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput
-                }}
-                inputProps={{ "aria-label": "search" }}
-              />
+        <Toolbar>
+          <DropDownMenu />
+          <Typography className={classes.title} variant="h6" noWrap>
+            TaskApp
+          </Typography>
+          <Typography className={classes.details} noWrap>
+            {totalDuration(tasks)}
+          </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
             </div>
-          </Toolbar>
-        </Container>
+            <InputBase
+              onChange={event => handleChange(event)}
+              value={search}
+              placeholder="Filter by title…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput
+              }}
+              inputProps={{ "aria-label": "search" }}
+            />
+          </div>
+        </Toolbar>
       </AppBar>
     </div>
   )

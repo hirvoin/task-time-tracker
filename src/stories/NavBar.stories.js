@@ -1,5 +1,6 @@
 import React from "react"
 import { TaskContext } from "../Store"
+import { HashRouter as Router } from "react-router-dom"
 import NavBar from "../components/NavBar"
 import { taskList } from "./contexts"
 
@@ -10,11 +11,13 @@ export default {
   decorators: [
     StoryFn => {
       return (
-        <TaskContext.Provider
-          value={{ tasks: taskList, dispatch: dummyDispatch }}
-        >
-          <StoryFn />
-        </TaskContext.Provider>
+        <Router>
+          <TaskContext.Provider
+            value={{ tasks: taskList, dispatch: dummyDispatch }}
+          >
+            <StoryFn />
+          </TaskContext.Provider>
+        </Router>
       )
     }
   ],

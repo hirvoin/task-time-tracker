@@ -1,4 +1,5 @@
 import React, { useContext } from "react"
+import i18next from "i18next"
 import { TaskContext } from "../Store"
 import {
   Card,
@@ -6,24 +7,43 @@ import {
   makeStyles,
   Typography,
   CardActions,
-  CardContent
+  CardContent,
+  Divider
 } from "@material-ui/core"
+import {
+  Done,
+  AssignmentTurnedIn,
+  PlayArrow,
+  CheckCircle,
+  DonutLarge,
+  PlayCircleOutline,
+  Timer
+} from "@material-ui/icons"
 
 const useStyles = makeStyles(theme => ({
   card: {
-    minWidth: 275,
+    minWidth: "275px",
+    minHeight: "225px",
     margin: theme.spacing(1)
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)"
   },
   title: {
     fontSize: 14
   },
-  pos: {
-    marginBottom: 12
+  divider: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
+  },
+  finishedIcon: {
+    color: theme.palette.success.main
+  },
+  inProgressIcon: {
+    color: theme.palette.warning.light
+  },
+  notStartedIcon: {},
+  timeIcon: {
+    marginRight: theme.spacing(1),
+    fontSize: 18,
+    color: theme.palette.primary.light
   }
 }))
 
@@ -35,16 +55,18 @@ const Task = ({ task }) => {
     const diff = Math.abs(
       (task.stopTime.getTime() - task.startTime.getTime()) / 1000
     )
-    const hours = Math.floor(diff / 3600)
-    const minutes = Math.floor((diff % 3600) / 60)
     const seconds = Math.floor((diff % 3600) % 60)
+    const minutes = Math.floor((diff % 3600) / 60)
+    const hours = Math.floor(diff / 3600)
 
     const hDisplay =
       hours > 0 ? hours + (hours === 1 ? " hour, " : " hours, ") : ""
     const mDisplay =
       minutes > 0 ? minutes + (minutes === 1 ? " minute, " : " minutes, ") : ""
     const sDisplay =
-      seconds > 0 ? seconds + (seconds === 1 ? " second" : " seconds") : ""
+      seconds > 0
+        ? seconds + (seconds === 1 ? " second" : " seconds")
+        : "1 second"
     return hDisplay + mDisplay + sDisplay
   }
 
@@ -73,31 +95,59 @@ const Task = ({ task }) => {
   }
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} elevation={2}>
       <CardContent>
-        <Typography variant="h5" component="h2">
-          {task.title}
-        </Typography>
+        <div style={{ display: "flex" }}>
+          <Typography variant="h5" component="h2" style={{ flexGrow: 1 }}>
+            {task.title}
+          </Typography>
+          {!task.startTime && <DonutLarge color="disabled" />}
+          {!task.stopTime && task.startTime && (
+            <DonutLarge className={classes.inProgressIcon} />
+          )}
+          {task.stopTime && <CheckCircle className={classes.finishedIcon} />}
+        </div>
         <Typography variant="body2" component="p">
           {task.description}
         </Typography>
-        {task.startTime && <p>start {task.startTime.toLocaleTimeString()}</p>}
+        <Divider className={classes.divider} />
+        {task.startTime && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center"
+            }}
+          >
+            <PlayCircleOutline className={classes.timeIcon} />
+            <p>{i18next.t("key", { date: task.startTime })}</p>
+          </div>
+        )}
         {task.stopTime && (
           <div>
-            <p>stop {task.stopTime.toLocaleTimeString()}</p>
-            Duration {calculateDuration()}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <AssignmentTurnedIn className={classes.timeIcon} />
+              {i18next.t("key", { date: task.stopTime })}
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Timer className={classes.timeIcon} />
+              <p>{calculateDuration()}</p>
+            </div>
           </div>
         )}
       </CardContent>
       <CardActions>
         {!task.startTime && (
-          <Button variant="outlined" color="primary" onClick={handleStart}>
-            Start
+          <Button
+            color="primary"
+            startIcon={<PlayArrow />}
+            onClick={handleStart}
+          >
+            Start task
           </Button>
         )}
         {!task.stopTime && task.startTime && (
-          <Button variant="outlined" color="secondary" onClick={handleStop}>
-            Stop
+          <Button startIcon={<Done />} onClick={handleStop}>
+            Finish task
           </Button>
         )}
       </CardActions>

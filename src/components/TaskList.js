@@ -5,6 +5,9 @@ import { Grid, makeStyles } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
   root: {
+    margin: theme.spacing(5)
+  },
+  grid: {
     margin: theme.spacing(3)
   }
 }))
@@ -12,17 +15,16 @@ const useStyles = makeStyles(theme => ({
 const TaskList = () => {
   const { tasks } = useContext(TaskContext)
   const classes = useStyles()
-  console.log("Task list:", tasks)
 
   if (!tasks) return null
 
   return (
     <div className={classes.root}>
-      <Grid container cols={3}>
+      <Grid container justify="center" spacing={3} cols={3}>
         {tasks
           .filter(t => t.visible)
           .map(t => (
-            <Grid key={t.id}>
+            <Grid item key={t.id}>
               <Task task={t} />
             </Grid>
           ))}

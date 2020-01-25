@@ -1,18 +1,30 @@
 import React, { useState, useContext } from "react"
 import uuid from "uuid"
 import { TaskContext } from "../Store"
-import { Button, TextField, makeStyles } from "@material-ui/core"
+import { Fab, TextField, makeStyles, Divider } from "@material-ui/core"
+import { Add } from "@material-ui/icons"
 
 const useStyles = makeStyles(theme => ({
   root: {
-    margin: theme.spacing(3)
+    display: "flex",
+    margin: theme.spacing(5),
+    position: "relative"
+  },
+  form: {
+    margin: "auto"
   },
   textField: {
     margin: theme.spacing(1),
     width: 200
   },
   button: {
-    margin: theme.spacing(1)
+    marginLeft: theme.spacing(1),
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)"
+  },
+  icon: {
+    marginRight: theme.spacing(1)
   }
 }))
 
@@ -21,11 +33,32 @@ const initialState = ""
 const NewTaskForm = () => {
   const [title, setTitle] = useState(initialState)
   const [description, setDescription] = useState(initialState)
+  const [titleError, setTitleError] = useState(false)
+  const [descriptionError, setDescriptionError] = useState(false)
 
   const tasks = useContext(TaskContext)
 
+  const isErrors = () => {
+    if (title.length < 1 || description.length < 1) {
+      title.length < 1 && setTitleError(true)
+      description.length < 1 && setDescriptionError(true)
+      return true
+    }
+    return false
+  }
+
+  const clearErrors = () => {
+    setTitleError(false)
+    setDescriptionError(false)
+  }
+
   const handleSubmit = event => {
     event.preventDefault()
+    clearErrors()
+    if (isErrors()) {
+      return
+    }
+
     const newTask = {
       id: uuid(),
       title,
@@ -44,37 +77,43 @@ const NewTaskForm = () => {
   const classes = useStyles()
 
   return (
-    <div className={classes.root}>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          className={classes.textField}
-          variant="outlined"
-          name="taskTitle"
-          label="Title"
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={event => setTitle(event.target.value)}
-        />
-        <TextField
-          value={description}
-          className={classes.textField}
-          variant="outlined"
-          label="Description"
-          name="taskDescription"
-          type="text"
-          placeholder="Description"
-          onChange={event => setDescription(event.target.value)}
-        />
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
-          Add new task
-        </Button>
-      </form>
+    <div>
+      <div className={classes.root}>
+        <form className={classes.form} onSubmit={handleSubmit}>
+          <TextField
+            error={titleError}
+            className={classes.textField}
+            variant="outlined"
+            name="taskTitle"
+            label="Title"
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={event => setTitle(event.target.value)}
+          />
+          <TextField
+            error={descriptionError}
+            value={description}
+            className={classes.textField}
+            variant="outlined"
+            label="Description"
+            name="taskDescription"
+            type="text"
+            placeholder="Description"
+            onChange={event => setDescription(event.target.value)}
+          />
+          <Fab
+            className={classes.button}
+            variant="extended"
+            color="secondary"
+            type="submit"
+          >
+            <Add className={classes.icon} />
+            Add task
+          </Fab>
+        </form>
+      </div>
+      <Divider />
     </div>
   )
 }
