@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create("width"),
-    width: 140,
+    width: 180,
     "&:focus": {
       width: 200
     }

@@ -4,7 +4,6 @@ import { TaskContext } from "../Store"
 import {
   Card,
   Button,
-  IconButton,
   makeStyles,
   Typography,
   CardActions,
@@ -18,14 +17,13 @@ import {
   CheckCircle,
   DonutLarge,
   PlayCircleOutline,
-  Timer,
-  Delete
+  Timer
 } from "@material-ui/icons"
+import RemoveTaskDialog from "./RemoveTaskDialog"
 
 const useStyles = makeStyles(theme => ({
   card: {
     minWidth: "275px",
-    // minHeight: "225px",
     margin: theme.spacing(1)
   },
   title: {
@@ -35,13 +33,15 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2)
   },
+  placeholderText: {
+    color: theme.palette.text.disabled
+  },
   finishedIcon: {
     color: theme.palette.success.main
   },
   inProgressIcon: {
     color: theme.palette.warning.light
   },
-  notStartedIcon: {},
   timeIcon: {
     marginRight: theme.spacing(1),
     fontSize: 18,
@@ -96,13 +96,8 @@ const Task = ({ task }) => {
     })
   }
 
-  const handleRemove = () => {
-    dispatch({
-      type: "REMOVE_TASK",
-      data: task.id
-    })
-  }
-
+  // could be refactored by giving Task a progress state and return component based on the progress status,
+  // rather than using a conditional operators everywhere
   return (
     <Card className={classes.card} elevation={2}>
       <CardContent>
@@ -132,7 +127,7 @@ const Task = ({ task }) => {
             {task.startTime ? (
               i18next.t("key", { date: task.startTime })
             ) : (
-              <i>start time</i>
+              <i className={classes.placeholderText}>start time</i>
             )}
           </p>
         </div>
@@ -142,12 +137,18 @@ const Task = ({ task }) => {
           {task.stopTime ? (
             i18next.t("key", { date: task.stopTime })
           ) : (
-            <i>finish time</i>
+            <i className={classes.placeholderText}>finish time</i>
           )}
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Timer className={classes.timeIcon} />
-          <p>{task.stopTime ? calculateDuration() : <i>duration</i>}</p>
+          <p>
+            {task.stopTime ? (
+              calculateDuration()
+            ) : (
+              <i className={classes.placeholderText}>duration</i>
+            )}
+          </p>
         </div>
       </CardContent>
 
@@ -162,27 +163,11 @@ const Task = ({ task }) => {
           </Button>
         )}
         {!task.stopTime && task.startTime && (
-          <Button startIcon={<Done color="action" />} onClick={handleStop}>
+          <Button color="primary" startIcon={<Done />} onClick={handleStop}>
             Finish task
           </Button>
         )}
-        {!task.stopTime && (
-          <IconButton
-            aria-label="delete"
-            style={{
-              marginLeft: "auto"
-            }}
-            onClick={handleRemove}
-            size="small"
-          >
-            <Delete />
-          </IconButton>
-        )}
-        {task.stopTime && (
-          <Button startIcon={<Delete color="action" />} onClick={handleRemove}>
-            Remove task
-          </Button>
-        )}
+        <RemoveTaskDialog taskId={task.id} />
       </CardActions>
     </Card>
   )

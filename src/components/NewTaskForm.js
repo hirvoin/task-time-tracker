@@ -7,11 +7,10 @@ import { Add } from "@material-ui/icons"
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
-    margin: theme.spacing(5),
-    position: "relative"
+    margin: theme.spacing(5)
   },
   form: {
-    margin: "auto"
+    marginLeft: "auto"
   },
   textField: {
     margin: theme.spacing(1),
@@ -19,9 +18,7 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     marginLeft: theme.spacing(1),
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)"
+    margin: "auto"
   },
   icon: {
     marginRight: theme.spacing(1)
@@ -79,7 +76,7 @@ const NewTaskForm = () => {
   return (
     <div>
       <div className={classes.root}>
-        <form className={classes.form} onSubmit={handleSubmit}>
+        <form id="taskForm" className={classes.form} onSubmit={handleSubmit}>
           <TextField
             error={titleError}
             className={classes.textField}
@@ -102,16 +99,17 @@ const NewTaskForm = () => {
             placeholder="Description"
             onChange={event => setDescription(event.target.value)}
           />
-          <Fab
-            className={classes.button}
-            variant="extended"
-            color="secondary"
-            type="submit"
-          >
-            <Add className={classes.icon} />
-            Add task
-          </Fab>
         </form>
+        <Fab
+          form="taskForm"
+          className={classes.button}
+          variant="extended"
+          color="secondary"
+          type="submit"
+        >
+          <Add className={classes.icon} />
+          Add task
+        </Fab>
       </div>
       <Divider />
     </div>
