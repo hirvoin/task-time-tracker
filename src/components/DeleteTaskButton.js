@@ -10,7 +10,7 @@ import {
 import { Delete } from "@material-ui/icons"
 import { TaskContext } from "../Store"
 
-const RemoveTaskDialog = props => {
+const DeleteTaskButton = props => {
   const [open, setOpen] = React.useState(false)
   const { dispatch } = useContext(TaskContext)
 
@@ -36,7 +36,7 @@ const RemoveTaskDialog = props => {
         marginLeft: "auto"
       }}
     >
-      <IconButton aria-label="delete" onClick={handleClickOpen} size="small">
+      <IconButton aria-label="delete" onClick={handleClickOpen}>
         <Delete />
       </IconButton>
       <Dialog
@@ -63,4 +63,4 @@ const RemoveTaskDialog = props => {
   )
 }
 
-export default RemoveTaskDialog
+export default DeleteTaskButton

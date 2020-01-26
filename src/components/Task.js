@@ -19,11 +19,12 @@ import {
   PlayCircleOutline,
   Timer
 } from "@material-ui/icons"
-import RemoveTaskDialog from "./RemoveTaskDialog"
+import DeleteTaskButton from "./DeleteTaskButton"
 
 const useStyles = makeStyles(theme => ({
   card: {
     minWidth: "275px",
+    minHeight: "290px",
     margin: theme.spacing(1)
   },
   title: {
@@ -167,7 +168,7 @@ const Task = ({ task }) => {
             Finish task
           </Button>
         )}
-        <RemoveTaskDialog taskId={task.id} />
+        <DeleteTaskButton taskId={task.id} />
       </CardActions>
     </Card>
   )
